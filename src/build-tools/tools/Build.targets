@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<MSBuildCommunityTasksPath Condition="'$(MSBuildCommunityTasksPath)' == ''">..\..\MSBuildTasks.1.4.0.45\tools</MSBuildCommunityTasksPath>
+		<NuGetExecutable>nuget.exe</NuGetExecutable>
+	</PropertyGroup>
+
+	<Import Project="..\..\MSBuildTasks.1.4.0.45\tools\MSBuild.Community.Tasks.Targets"/>
+
+	<Target Name="RestorePackages">
+		<CreateItem Include="@(ProjectReference->'%(rootdir)%(directory)packages.config')">
+			<Output TaskParameter="Include" ItemName="UnfilteredPackagesConfigPerProject"/>
+		</CreateItem>
+		
+		<RemoveDuplicates Inputs="@(UnfilteredPackagesConfigPerProject)">
+			<Output TaskParameter="Filtered" ItemName="PackageConfigurationFiles"/>
+		</RemoveDuplicates>
+
+		<Exec Command="$(NuGetExecutable) install -o $(MSBuildProjectDirectory)\packages %(PackageConfigurationFiles.Identity)" Condition="Exists('%(PackageConfigurationFiles.Identity)')"/>
+	</Target>
+
+	<Target Name="GetBuildProperties">
+		<PropertyGroup>
+			<BuildProperties>Configuration=$(Configuration)</BuildProperties>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="BeforeBuildOrRebuild"/>
+	<Target Name="AfterBuildOrRebuild"/>
+	<Target Name="BeforeBuild"/>
+	<Target Name="AfterBuild"/>
+	<Target Name="BeforeRebuild"/>
+	<Target Name="AfterRebuild"/>
+	<Target Name="BeforeClean"/>
+	<Target Name="AfterClean"/>
+	<Target Name="BeforePackage"/>
+	<Target Name="AfterPackage"/>
+
+	<Target Name="PerformBuild">
+		<MSBuild
+			Projects="@(ProjectReference)"
+			Properties="$(BuildProperties)"
+			RebaseOutputs="true"
+			StopOnFirstFailure="true"
+			Targets="Build">
+		</MSBuild>
+	</Target>
+
+	<Target Name="PerformRebuild">
+		<MSBuild
+			Projects="@(ProjectReference)"
+			Properties="$(BuildProperties)"
+			RebaseOutputs="true"
+			StopOnFirstFailure="true"
+			Targets="Rebuild">
+		</MSBuild>
+	</Target>
+
+	<Target Name="PerformPackage">
+		<MSBuild
+			Projects="@(PackagingProjectReference)"
+			Properties="$(BuildProperties)"
+			RebaseOutputs="true"
+			StopOnFirstFailure="true"
+			Targets="Build">
+		</MSBuild>
+	</Target>
+
+	<ItemGroup>
+		<DirectoryToCleanup Include="$(MSBuildProjectDirectory)\target"/>
+		<DirectoryToCleanup Include="$(MSBuildProjectDirectory)\TestResults"/>
+		<DirectoryToCleanup Include="$(MSBuildProjectDirectory)\packages"/>
+	</ItemGroup>
+	
+	<Target Name="PerformClean">
+		<MSBuild
+			Projects="@(ProjectReference)"
+			Properties="$(BuildProperties)"
+			RebaseOutputs="true"
+			StopOnFirstFailure="true"
+			Targets="Clean"/>
+		
+		<RemoveDir Directories="@(DirectoryToCleanup)" ContinueOnError="true"/>
+	</Target>
+
+	<Target Name="Build" DependsOnTargets="RestorePackages;GetBuildProperties;BeforeBuildOrRebuild;BeforeBuild;PerformBuild;AfterBuild;AfterBuildOrRebuild"/>
+	<Target Name="Rebuild" DependsOnTargets="RestorePackages;GetBuildProperties;BeforeBuildOrRebuild;BeforeRebuild;PerformRebuild;AfterRebuild;AfterBuildOrRebuild"/>
+	<Target Name="Clean" DependsOnTargets="GetBuildProperties;BeforeClean;PerformClean;AfterClean"/>
+	<Target Name="Package" DependsOnTargets="GetBuildProperties;BeforePackage;PerformPackage;AfterPackage"/>
+</Project>
