@@ -7,6 +7,11 @@
 
 	<Import Project="..\..\MSBuildTasks.1.4.0.45\tools\MSBuild.Community.Tasks.Targets"/>
 
+	<PropertyGroup>
+		<NuGetSourcesArgument Condition=" '$(NuGetSources)' != '' ">-Source $(NuGetSources) </NuGetSourcesArgument>
+		<NuGetPrereleaseArgument Condition=" '$(NuGetPrerelease)' == 'true' ">-Prerelease</NuGetPrereleaseArgument>
+	</PropertyGroup>
+
 	<Target Name="RestorePackages">
 		<CreateItem Include="@(ProjectReference->'%(rootdir)%(directory)packages.config')">
 			<Output TaskParameter="Include" ItemName="UnfilteredPackagesConfigPerProject"/>
@@ -16,7 +21,7 @@
 			<Output TaskParameter="Filtered" ItemName="PackageConfigurationFiles"/>
 		</RemoveDuplicates>
 
-		<Exec Command="$(NuGetExecutable) install -o $(MSBuildProjectDirectory)\packages %(PackageConfigurationFiles.Identity)" Condition="Exists('%(PackageConfigurationFiles.Identity)')"/>
+		<Exec Command="$(NuGetExecutable) install -o $(MSBuildProjectDirectory)\packages $(NuGetSourcesArgument)$(NuGetPrereleaseArgument) %(PackageConfigurationFiles.Identity)" Condition="Exists('%(PackageConfigurationFiles.Identity)')"/>
 	</Target>
 
 	<Target Name="GetBuildProperties">
