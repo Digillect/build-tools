@@ -84,26 +84,19 @@
 
 	<Target Name="BeforePrepare"/>
 	<Target Name="AfterPrepare"/>
-	<Target Name="PrepareVersionFromAssembly" Condition=" '$(VersionAssembly)' != '' ">
+
+	<Target Name="FetchPackageVersionFromAssembly" Condition=" '$(VersionAssembly)' != '' ">
 		<Message Text="Using version from assembly '$(VersionAssembly)'"/>
 
 		<GetAssemblyIdentity AssemblyFiles="$(VersionAssembly)">
 			<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
 		</GetAssemblyIdentity>
 
-		<XmlUpdate
-			Namespace="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
-			XmlFileName="$(OutputPath)\$(NuSpecFileName)"
-			XPath="/package/metadata/version"
-			Value="%(AssemblyInfo.Version)"/>
-
 		<PropertyGroup>
-			<OutputPackage>$(OutputPath)\$([System.IO.Path]::GetFileNameWithoutExtension( '$(NuSpecFileName)' )).%(AssemblyInfo.Version).nupkg</OutputPackage>
+			<PackageVersion>%(AssemblyInfo.Version)</PackageVersion>
 		</PropertyGroup>
-
-		<Message Text="Package version stamped, output package set to $(OutputPackage)."/>
 	</Target>
-	<Target Name="PrepareVersionFromSpec" Condition=" '$(VersionAssembly)' == '' ">
+	<Target Name="FetchPackageVersionFromSpecFile" Condition=" '$(VersionAssembly)' == '' ">
 		<Message Text="Using version from spec file"/>
 
 		<XmlRead
@@ -113,31 +106,19 @@
 			<Output TaskParameter="Value" PropertyName="OriginalPackageVersion"/>
 		</XmlRead>
 
-		<PropertyGroup Condition=" '$(BuildNumber)' == '' ">
+		<PropertyGroup>
 			<PackageVersion>$(OriginalPackageVersion)</PackageVersion>
 		</PropertyGroup>
-		<PropertyGroup Condition=" '$(BuildNumber)' != '' ">
-			<!-- According to SemanticVersioning build number MUST be delimited by plus sign
-			     (+), but current implementation of NuGet doesn't recognize it -->
-			<PackageVersion>$(OriginalPackageVersion)-build-$(BuildNumber)</PackageVersion>
-		</PropertyGroup>
-
-		<Message Text="Package version set to $(PackageVersion) from $(OriginalPackageVersion)."/>
-
-		<XmlUpdate
-			Namespace="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
-			XmlFileName="$(OutputPath)\$(NuSpecFileName)"
-			XPath="/package/metadata/version"
-			Value="$(PackageVersion)"
-			Condition=" '$(PackageVersion)' != '$(OriginalPackageVersion)' "/>
-
+	</Target>
+	<Target Name="FetchPackageVersion" DependsOnTargets="FetchPackageVersionFromAssembly;FetchPackageVersionFromSpecFile"/>
+	<Target Name="TransformPackageVersion"/>
+	<Target Name="PrepareVersion" DependsOnTargets="FetchPackageVersion;TransformPackageVersion">
 		<PropertyGroup>
 			<OutputPackage>$(OutputPath)\$([System.IO.Path]::GetFileNameWithoutExtension( '$(NuSpecFileName)' )).$(PackageVersion).nupkg</OutputPackage>
 		</PropertyGroup>
 
-		<Message Text="Package version stamped, output package set to $(OutputPackage)."/>
+		<Message Text="Package version set to $(PackageVersion), output package set to $(OutputPackage)."/>
 	</Target>
-	<Target Name="PrepareVersion" DependsOnTargets="PrepareVersionFromAssembly;PrepareVersionFromSpec"/>
 	<Target Name="ProcessPrepare" DependsOnTargets="PrepareVersion"/>
 
 	<Target Name="Prepare" DependsOnTargets="BeforePrepare;ProcessPrepare;AfterPrepare"/>
@@ -145,7 +126,7 @@
 	<Target Name="BeforePackage"/>
 	<Target Name="AfterPackage"/>
 	<Target Name="ProcessPackage">
-		<Exec Command='$(NuGetExecutable) pack "$(NuSpecFileName)"' WorkingDirectory='$(OutputPath)'/>
+		<Exec Command='$(NuGetExecutable) pack "$(NuSpecFileName)" -Version "$(PackageVersion)"' WorkingDirectory='$(OutputPath)'/>
 	</Target>
 
 	<Target Name="Package" DependsOnTargets="BeforePackage;ProcessPackage;AfterPackage"/>
