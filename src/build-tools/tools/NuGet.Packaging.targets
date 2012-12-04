@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<MSBuildCommunityTasksPath>..\..\..\packages\MSBuildTasks.1.4.0.45\tools</MSBuildCommunityTasksPath>
+		<MSBuildCommunityTasksPath Condition=" '$(MSBuildCommunityTasksPath)' == '' ">..\..\..\packages\MSBuildTasks.1.4.0.45\tools</MSBuildCommunityTasksPath>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+
+	<UsingTask AssemblyFile="$(DigillectBuildTasksPath)Digillect.Build.Tasks.dll" TaskName="FileVersionInfo"/>
 
 	<PropertyGroup Condition=" '$(NuSpecFileName)' == '' ">
 		<NuSpecFileName>$(MSBuildProjectName).nuspec</NuSpecFileName>
@@ -26,10 +28,6 @@
 		<Tools Include="tools\**"/>
 	</ItemGroup>
 
-	<PropertyGroup>
-		<NuGetExecutable>nuget.exe</NuGetExecutable>
-	</PropertyGroup>
-
 	<Target Name="BeforeClean"/>
 	<Target Name="AfterClean"/>
 	<Target Name="ProcessClean">
@@ -48,9 +46,9 @@
 		<Copy SourceFiles="@(LibNet11)" DestinationFolder="$(OutputPath)\lib\net11\%(RecursiveDir)"/>
 
 		<Copy SourceFiles="@(LibNet20)" DestinationFolder="$(OutputPath)\lib\net20\%(RecursiveDir)"/>
-		<Copy SourceFiles="@(LibNet20Client)" DestinationFolder="$(OutputPath)\lib\net20-client\%(RecursiveDir)"/>
-		<Copy SourceFiles="@(LibNet20Full)" DestinationFolder="$(OutputPath)\lib\net20-full\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibNet20Compact)" DestinationFolder="$(OutputPath)\lib\net20-cf\%(RecursiveDir)"/>
+
+		<Copy SourceFiles="@(LibNet35)" DestinationFolder="$(OutputPath)\lib\net35\%(RecursiveDir)"/>
 
 		<Copy SourceFiles="@(LibNet40)" DestinationFolder="$(OutputPath)\lib\net40\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibNet40Client)" DestinationFolder="$(OutputPath)\lib\net40-client\%(RecursiveDir)"/>
@@ -58,8 +56,6 @@
 		<Copy SourceFiles="@(LibNet40Compact)" DestinationFolder="$(OutputPath)\lib\net40-cf\%(RecursiveDir)"/>
 
 		<Copy SourceFiles="@(LibNet45)" DestinationFolder="$(OutputPath)\lib\net45\%(RecursiveDir)"/>
-		<Copy SourceFiles="@(LibNet45Client)" DestinationFolder="$(OutputPath)\lib\net45-client\%(RecursiveDir)"/>
-		<Copy SourceFiles="@(LibNet45Full)" DestinationFolder="$(OutputPath)\lib\net45-full\%(RecursiveDir)"/>
 
 		<Copy SourceFiles="@(LibWinRT45)" DestinationFolder="$(OutputPath)\lib\win8\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibWin8)" DestinationFolder="$(OutputPath)\lib\win8\%(RecursiveDir)"/>
@@ -67,6 +63,7 @@
 		<Copy SourceFiles="@(LibWin8Managed)" DestinationFolder="$(OutputPath)\lib\win8-managed\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibWin8Native)" DestinationFolder="$(OutputPath)\lib\win8-native\%(RecursiveDir)"/>
 
+		<Copy SourceFiles="@(LibSL3)" DestinationFolder="$(OutputPath)\lib\sl3\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibSL4)" DestinationFolder="$(OutputPath)\lib\sl4\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibSL5)" DestinationFolder="$(OutputPath)\lib\sl5\%(RecursiveDir)"/>
 
@@ -88,12 +85,12 @@
 	<Target Name="FetchPackageVersionFromAssembly" Condition=" '$(VersionAssembly)' != '' ">
 		<Message Text="Using version from assembly '$(VersionAssembly)'"/>
 
-		<GetAssemblyIdentity AssemblyFiles="$(VersionAssembly)">
-			<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
-		</GetAssemblyIdentity>
+		<FileVersionInfo Files="$(VersionAssembly)">
+			<Output TaskParameter="FileVersionInfos" ItemName="Info"/>
+		</FileVersionInfo>
 
 		<PropertyGroup>
-			<PackageVersion>%(AssemblyInfo.Version)</PackageVersion>
+			<PackageVersion>%(Info.FileVersion)</PackageVersion>
 		</PropertyGroup>
 	</Target>
 	<Target Name="FetchPackageVersionFromSpecFile" Condition=" '$(VersionAssembly)' == '' ">
@@ -126,7 +123,7 @@
 	<Target Name="BeforePackage"/>
 	<Target Name="AfterPackage"/>
 	<Target Name="ProcessPackage">
-		<Exec Command='$(NuGetExecutable) pack "$(NuSpecFileName)" -Version "$(PackageVersion)"' WorkingDirectory='$(OutputPath)'/>
+		<NuGetPack File="$(NuSpecFileName)" Version="$(PackageVersion)" WorkingDirectory="$(OutputPath)"/>
 	</Target>
 
 	<Target Name="Package" DependsOnTargets="BeforePackage;ProcessPackage;AfterPackage"/>
@@ -134,6 +131,6 @@
 	<Target Name="Build" DependsOnTargets="Clean;Copy;Prepare;Package"/>
 
 	<Target Name="Push" DependsOnTargets="Build" Condition=" '$(NuGetServer)' != '' and '$(NuGetServerPassword)' != '' ">
-		<Exec Command='$(NuGetExecutable) push $(OutputPackage) -s "$(NuGetServer)" "$(NuGetServerPassword)"'/>
+		<NuGetPush File="$(OutputPackage)" Source="$(NuGetServer)" APIKey="$(NuGetServerPassword)"/>
 	</Target>
 </Project>
