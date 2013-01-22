@@ -73,6 +73,8 @@
 		<Copy SourceFiles="@(LibWP8)" DestinationFolder="$(OutputPath)\lib\wp8\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibWP80)" DestinationFolder="$(OutputPath)\lib\wp8\%(RecursiveDir)"/>
 
+		<Copy SourceFiles="@(LibPortable)" DestinationFolder="$(OutputPath)\lib\portable-%(LibPortable.Profile)\%(RecursiveDir)"/>
+
 		<Copy SourceFiles="@(Content)" DestinationFolder="$(OutputPath)\content\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(Tools)" DestinationFolder="$(OutputPath)\tools\%(RecursiveDir)"/>
 	</Target>
