@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Actis® Wunderman")]
 [assembly: AssemblyProduct("Digillect Build Tools")]
-[assembly: AssemblyCopyright("© 2012 Actis® Wunderman")]
+[assembly: AssemblyCopyright("© 2012-2013 Gregory Nickonov (Actis® Wunderman)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 //[assembly: Guid("e754eaaf-2f4d-4f8c-9ac8-f561a6654e40")]
 
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]
