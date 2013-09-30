@@ -91,8 +91,47 @@
 		<RemoveDir Directories="@(DirectoryToCleanup)" ContinueOnError="true"/>
 	</Target>
 
+	<Target Name="PrepareMachineSpecificationsCommand">
+		<ItemGroup>
+			<_MachineSpecificationsExecutables Include="$(MSBuildProjectDirectory)\packages\**\tools\mspec-clr4.exe"/>
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_MachineSpecificationsCommands>@(_MachineSpecificationsExecutables)</_MachineSpecificationsCommands>
+			<_NumberOfMachineSpecificationsCommands>$(_MachineSpecificationsCommands.Split( ';' ).Length)</_NumberOfMachineSpecificationsCommands>
+			<_IndexOfLastMachineSpecificationsCommand>$([MSBuild]::Subtract( $(_NumberOfMachineSpecificationsCommands), 1 ))</_IndexOfLastMachineSpecificationsCommand>
+			<MachineSpecificationsCommand Condition="'$(_MachineSpecificationsCommands)' != ''">$(_MachineSpecificationsCommands.Split( ';' )[$(_IndexOfLastMachineSpecificationsCommand)])</MachineSpecificationsCommand>
+			<MachineSpecificationsCommand Condition="'$(_MachineSpecificationsCommands)' == ''"></MachineSpecificationsCommand>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="PrepareMachineSpecificationsProjects" Inputs="%(ProjectReference.Identity)" Outputs="_Non_Existent_Item_To_Batch_Machine_Specifications_">
+		<ItemGroup>
+			<MachineSpecificationsProjectReference Include="@(ProjectReference)" Condition="'%(ProjectReference.TestFramework)' == 'Machine.Specifications'"/>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="TestMachineSpecificationsProjects" Condition="'@(MachineSpecificationsProjectReference)' != '' AND '$(MachineSpecificationsCommand)' != ''">
+		<Exec
+			Command="$(MachineSpecificationsCommand) --xml .\report.xml %(MachineSpecificationsProjectReference.Filename).dll"
+			ContinueOnError="True"
+			WorkingDirectory="target\test\$(Configuration)\%(MachineSpecificationsProjectReference.Filename)"/>
+		
+		<XslTransformation
+			XmlInputPaths="target\test\$(Configuration)\%(MachineSpecificationsProjectReference.Filename)\report.xml"
+			XslInputPath="tools\testing\mspec2junit.xslt"
+			OutputPaths="target\test\$(Configuration)\%(MachineSpecificationsProjectReference.Filename)\junit-report.xml"/>
+	</Target>
+
+	<Target Name="TestMachineSpecifications" DependsOnTargets="PrepareMachineSpecificationsCommand;PrepareMachineSpecificationsProjects;TestMachineSpecificationsProjects"/>
+
+	<Target Name="BeforeTest"/>
+	<Target Name="AfterTest"/>
+	<Target Name="CoreTest" DependsOnTargets="TestMachineSpecifications"/>
+	
 	<Target Name="Build" DependsOnTargets="RestorePackages;GetBuildProperties;BeforeBuildOrRebuild;BeforeBuild;CoreBuild;AfterBuild;AfterBuildOrRebuild"/>
 	<Target Name="Rebuild" DependsOnTargets="RestorePackages;GetBuildProperties;BeforeBuildOrRebuild;BeforeRebuild;CoreRebuild;AfterRebuild;AfterBuildOrRebuild"/>
 	<Target Name="Clean" DependsOnTargets="GetBuildProperties;BeforeClean;CoreClean;AfterClean"/>
+	<Target Name="Test" DependsOnTargets="BeforeTest;CoreTest;AfterTest"/>
 	<Target Name="Package" DependsOnTargets="GetBuildProperties;BeforePackage;CorePackage;AfterPackage"/>
 </Project>

@@ -75,6 +75,9 @@
 
 		<Copy SourceFiles="@(LibPortable)" DestinationFolder="$(OutputPath)\lib\portable-%(LibPortable.Profile)\%(RecursiveDir)"/>
 
+		<Copy SourceFiles="@(LibMonoAndroid)" DestinationFolder="$(OutputPath)\lib\MonoAndroid\%(RecursiveDir)"/>
+		<Copy SourceFiles="@(LibMonoTouch)" DestinationFolder="$(OutputPath)\lib\MonoTouch\%(RecursiveDir)"/>
+
 		<Copy SourceFiles="@(Content)" DestinationFolder="$(OutputPath)\content\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(Tools)" DestinationFolder="$(OutputPath)\tools\%(RecursiveDir)"/>
 	</Target>
