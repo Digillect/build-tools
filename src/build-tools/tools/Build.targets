@@ -114,7 +114,6 @@
 	<Target Name="TestMachineSpecificationsProjects" Condition="'@(MachineSpecificationsProjectReference)' != '' AND '$(MachineSpecificationsCommand)' != ''">
 		<Exec
 			Command="$(MachineSpecificationsCommand) --xml .\report.xml %(MachineSpecificationsProjectReference.Filename).dll"
-			ContinueOnError="True"
 			WorkingDirectory="target\test\$(Configuration)\%(MachineSpecificationsProjectReference.Filename)"/>
 		
 		<XslTransformation
