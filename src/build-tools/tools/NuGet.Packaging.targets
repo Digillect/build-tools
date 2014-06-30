@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<MSBuildCommunityTasksPath Condition=" '$(MSBuildCommunityTasksPath)' == '' ">..\..\..\packages\MSBuildTasks.1.4.0.56\tools</MSBuildCommunityTasksPath>
+		<MSBuildCommunityTasksPath Condition=" '$(MSBuildCommunityTasksPath)' == '' ">..\..\..\packages\MSBuildTasks.1.4.0.74\tools</MSBuildCommunityTasksPath>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
@@ -72,7 +72,8 @@
 		<Copy SourceFiles="@(LibWP71)" DestinationFolder="$(OutputPath)\lib\wp71\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibWP8)" DestinationFolder="$(OutputPath)\lib\wp8\%(RecursiveDir)"/>
 		<Copy SourceFiles="@(LibWP80)" DestinationFolder="$(OutputPath)\lib\wp8\%(RecursiveDir)"/>
-		<Copy SourceFiles="@(LibWP81)" DestinationFolder="$(OutputPath)\lib\wpa81\%(RecursiveDir)"/>
+		<Copy SourceFiles="@(LibWP81)" DestinationFolder="$(OutputPath)\lib\wp81\%(RecursiveDir)"/>
+		<Copy SourceFiles="@(LibWPA81)" DestinationFolder="$(OutputPath)\lib\wpa81\%(RecursiveDir)"/>
 
 		<Copy SourceFiles="@(LibPortable)" DestinationFolder="$(OutputPath)\lib\portable-%(LibPortable.Profile)\%(RecursiveDir)"/>
 
