@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="_CheckForInvalidConfiguration" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="_CheckForInvalidConfiguration">
+    <PropertyGroup>
+      <_InvalidConfigurationMessageText>The Configuration property is not set for project '$(MSBuildProjectFile)'.</_InvalidConfigurationMessageText>
+    </PropertyGroup>
+
+    <Error Condition="'$(Configuration)' == ''" Text="$(_InvalidConfigurationMessageText)" />
+
+    <Message Text="Configuration=$(Configuration)" Importance="Low" />
+  </Target>
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      RestorePackages;
+      BeforeBuild;
+      GetBuildProperties;
+      CoreBuild;
+      AfterBuild
+    </BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Build" DependsOnTargets="$(BuildDependsOn)" />
+
+  <Target Name="BeforeBuild" />
+  <Target Name="AfterBuild" />
+
+  <Target Name="CoreBuild">
+    <MSBuild
+      Projects="@(ProjectReference)"
+      Properties="$(BuildProperties)"
+      Targets="Build"
+    >
+      <Output TaskParameter="TargetOutputs" ItemName="BuildOutputs" />
+    </MSBuild>
+  </Target>
+
+  <PropertyGroup>
+    <RebuildDependsOn>
+      BeforeRebuild;
+      Clean;
+      Build;
+      AfterRebuild
+    </RebuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Rebuild" DependsOnTargets="$(RebuildDependsOn)" />
+
+  <Target Name="BeforeRebuild" />
+  <Target Name="AfterRebuild" />
+
+  <PropertyGroup>
+    <CleanDependsOn>
+      BeforeClean;
+      GetBuildProperties;
+      CoreClean;
+      AfterClean
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Clean" DependsOnTargets="$(CleanDependsOn)" />
+
+  <Target Name="BeforeClean" />
+  <Target Name="AfterClean" />
+
+  <Target Name="CoreClean">
+    <MSBuild
+      Projects="@(ProjectReference)"
+      Properties="$(BuildProperties)"
+      Targets="Clean"
+    />
+  </Target>
+
+  <PropertyGroup>
+    <TestDependsOn>
+      BeforeTest;
+      GetBuildProperties;
+      CoreTest;
+      AfterTest
+    </TestDependsOn>
+    <CoreTestDependsOn />
+  </PropertyGroup>
+
+  <Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
+
+  <Target Name="BeforeTest" />
+  <Target Name="AfterTest" />
+  <Target Name="CoreTest" DependsOnTargets="$(CoreTestDependsOn)" />
+
+  <Target Name="RestorePackages">
+    <ItemGroup>
+      <_UnfilteredPackagesConfigPerProject Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)packages.config" />
+      <!-- Starting with the NuGet 2.8 there can be additional per-project packages.config files -->
+      <_UnfilteredPackagesConfigPerProject Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)packages.$([System.String]::Copy('%(ProjectReference.Filename)').Replace(' ', '_')).config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_PackagesConfigFiles Include="@(_UnfilteredPackagesConfigPerProject->Distinct())" Condition="Exists('%(_UnfilteredPackagesConfigPerProject.FullPath)')" />
+    </ItemGroup>
+
+    <Exec Command='"$(NuGetExecutable)" restore "%(_PackagesConfigFiles.FullPath)" -PackagesDirectory "$(MSBuildProjectDirectory)\packages" $(NuGetSourcesArgument) $(NuGetVerbosityArgument) -NonInteractive' Condition="'@(_PackagesConfigFiles)' != ''" />
+  </Target>
+
+  <Target Name="GetBuildProperties">
+    <PropertyGroup>
+      <BuildProperties Condition="'$(BuildProperties)' == ''">Configuration=$(Configuration);VisualStudioVersion=$(VisualStudioVersion)</BuildProperties>
+      <BuildProperties Condition="'$(BuildProperties)' != ''">Configuration=$(Configuration);VisualStudioVersion=$(VisualStudioVersion);$(BuildProperties)</BuildProperties>
+    </PropertyGroup>
+  </Target>
+</Project>

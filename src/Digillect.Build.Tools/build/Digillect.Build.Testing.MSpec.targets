@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TestWorkingDirectory Condition="'$(TestWorkingDirectory)' == ''">$(MSBuildProjectDirectory)\target\$(Configuration)\tests\</TestWorkingDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CoreTestDependsOn>
+      $(CoreTestDependsOn);
+      PrepareMachineSpecificationsCommand;
+      TestMachineSpecificationsProjects
+    </CoreTestDependsOn>
+
+    <MachineSpecificationsGenerateJUnitResults Condition="'$(MachineSpecificationsGenerateJUnitResults)' == ''">false</MachineSpecificationsGenerateJUnitResults>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <MachineSpecificationsProjectReference Include="@(ProjectReference->WithMetadataValue('TestFramework', 'Machine.Specifications'))" />
+  </ItemGroup>
+
+  <Target Name="PrepareMachineSpecificationsCommand" Condition="'$(MachineSpecificationsCommand)' == ''">
+    <ItemGroup>
+      <_MachineSpecificationsExecutables Include="$(MSBuildProjectDirectory)\packages\Machine.Specifications.*\tools\mspec-clr4.exe" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_MachineSpecificationsCommands>@(_MachineSpecificationsExecutables->Reverse())</_MachineSpecificationsCommands>
+      <MachineSpecificationsCommand Condition="'$(_MachineSpecificationsCommands)' != ''">$(_MachineSpecificationsCommands.Split(';')[0])</MachineSpecificationsCommand>
+    </PropertyGroup>
+
+    <Error Condition="'$(MachineSpecificationsCommand)' == ''" Text="Machine.Specifications runner command is not defined." />
+    <Message Condition="'$(MachineSpecificationsCommand)' != ''" Text="Machine.Specifications runner command defined as &quot;$(MachineSpecificationsCommand)&quot;." />
+  </Target>
+
+  <Target Name="TestMachineSpecificationsProjects" Condition="'$(MachineSpecificationsCommand)' != '' And '@(MachineSpecificationsProjectReference)' != ''" Outputs="$(TestWorkingDirectory)report.xml">
+    <PropertyGroup>
+      <_MachineSpecificationsSilent Condition="'$(TestVerbose)' != 'true'">-s</_MachineSpecificationsSilent>
+    </PropertyGroup>
+
+    <MSBuild Projects="@(MachineSpecificationsProjectReference)" Properties="$(BuildProperties)" Targets="Build">
+      <Output TaskParameter="TargetOutputs" ItemName="_MachineSpecificationsAssemblies" />
+    </MSBuild>
+
+    <Exec
+      Command="&quot;$(MachineSpecificationsCommand)&quot; $(_MachineSpecificationsSilent) --xml &quot;$(TestWorkingDirectory)report.xml&quot; @(_MachineSpecificationsAssemblies->'&quot;%(FullPath)&quot;', ' ')"
+      IgnoreExitCode="true"
+      WorkingDirectory="$(TestWorkingDirectory)"
+    />
+
+    <XslTransformation Condition="'$(MachineSpecificationsGenerateJUnitResults)' == 'true'"
+      XmlInputPaths="$(TestWorkingDirectory)report.xml"
+      XslInputPath="$(MSBuildThisFileDirectory)mSpec2JUnit.xslt"
+      OutputPaths="$(TestWorkingDirectory)junit-report.xml"
+    />
+  </Target>
+</Project>

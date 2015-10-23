@@ -1,21 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digillect.Build.Tasks", "src\Digillect.Build.Tasks\Digillect.Build.Tasks.csproj", "{1B6059AC-D9EA-4F1D-8B4E-8FA4E0AC0496}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet Package", "NuGet Package", "{048D0D63-DEF3-4B93-86A5-89CA4E00DD55}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F8EEDD0-24E2-4717-AD4C-C70BA7A80226}"
 	ProjectSection(SolutionItems) = preProject
-		src\build-tools\Digillect.Build.Tools.nuproj = src\build-tools\Digillect.Build.Tools.nuproj
-		src\build-tools\Digillect.Build.Tools.nuspec = src\build-tools\Digillect.Build.Tools.nuspec
+		build.cmd = build.cmd
+		build.proj = build.proj
+		src\Digillect.Build.Tools.Tests\Digillect.Build.Tools.Tests.proj = src\Digillect.Build.Tools.Tests\Digillect.Build.Tools.Tests.proj
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{AB829DC8-BA33-4426-84C0-CAA9030142C1}"
-	ProjectSection(SolutionItems) = preProject
-		src\build-tools\tools\Build.targets = src\build-tools\tools\Build.targets
-		src\build-tools\tools\NuGet.Packaging.targets = src\build-tools\tools\NuGet.Packaging.targets
-	EndProjectSection
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Digillect.Build.Tools", "src\Digillect.Build.Tools\Digillect.Build.Tools.shproj", "{C24B6DBF-93C6-463E-88E8-0F614D1A55C8}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\Digillect.Build.Tools\Digillect.Build.Tools.projitems*{c24b6dbf-93c6-463e-88e8-0f614d1a55c8}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="_CheckPackageOutputPath" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)Digillect.Build.Tools.targets" />
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      Clean;
+      CopyPackageFilesToDestination;
+      PreparePackageVersion;
+      Package
+    </BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CoreClean">
+    <RemoveDir Directories="$(OutputPath)" ContinueOnError="true" />
+  </Target>
+
+  <Target Name="CopyPackageFilesToDestination">
+    <ItemGroup>
+      <LibNet40 Include="@(LibNet40Full)" />
+      <LibWin8 Include="@(LibWinRT45)" />
+      <LibWP7 Include="@(LibWP70)" />
+      <LibWP8 Include="@(LibWP80)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_PackageSources Remove="@(_PackageSources)" />
+
+      <_PackageSources Include="$(NuSpecFilePath)">
+        <DestinationRelativeDir />
+      </_PackageSources>
+
+      <_PackageSources Include="@(Build)" />
+      <_PackageSources Include="@(Content)" />
+
+      <_PackageSources Include="@(Lib)" />
+
+      <_PackageSources Include="@(LibNet11)" />
+
+      <_PackageSources Include="@(LibNet20)" />
+      <_PackageSources Include="@(LibNet20Compact)" />
+
+      <_PackageSources Include="@(LibNet35)" />
+
+      <_PackageSources Include="@(LibNet40)" />
+      <_PackageSources Include="@(LibNet40Client)" />
+      <_PackageSources Include="@(LibNet403)" />
+
+      <_PackageSources Include="@(LibNet45)" />
+      <_PackageSources Include="@(LibNet451)" />
+      <_PackageSources Include="@(LibNet452)" />
+      <_PackageSources Include="@(LibNet46)" />
+
+      <_PackageSources Include="@(LibWin8)" />
+      <_PackageSources Include="@(LibWin81)" />
+
+      <_PackageSources Include="@(LibSL3)" />
+      <_PackageSources Include="@(LibSL4)" />
+      <_PackageSources Include="@(LibSL5)" />
+
+      <_PackageSources Include="@(LibWP7)" />
+      <_PackageSources Include="@(LibWP71)" />
+      <_PackageSources Include="@(LibWP8)" />
+      <_PackageSources Include="@(LibWP81)" />
+      <_PackageSources Include="@(LibWPA81)" />
+
+      <_PackageSources Include="@(LibPortable)">
+        <DestinationRelativeDir>%(DestinationRelativeDir)portable-%(LibPortable.Profile)\</DestinationRelativeDir>
+      </_PackageSources>
+
+      <_PackageSources Include="@(LibNative)" />
+
+      <_PackageSources Include="@(LibMono)" />
+      <_PackageSources Include="@(LibMonoAndroid)" />
+      <_PackageSources Include="@(LibMonoTouch)" />
+      <_PackageSources Include="@(LibMonoMac)" />
+
+      <_PackageSources Include="@(Tools)" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_PackageSources)" DestinationFolder="$(OutputPath)%(DestinationRelativeDir)%(RecursiveDir)" OverwriteReadOnlyFiles="true" />
+  </Target>
+
+  <PropertyGroup>
+    <PreparePackageVersionDependsOn>
+      _FetchPackageVersionFromAssembly;
+      _FetchPackageVersionFromSpecFile;
+      TransformPackageVersion
+    </PreparePackageVersionDependsOn>
+  </PropertyGroup>
+
+  <Target Name="PreparePackageVersion" Condition="'$(PackageVersion)' == ''" DependsOnTargets="$(PreparePackageVersionDependsOn)">
+    <Message Text="Package version set to $(PackageVersion)." />
+  </Target>
+
+  <Target Name="_FetchPackageVersionFromAssembly" Condition="'$(VersionAssembly)' != ''">
+    <Message Text="Using version from assembly '$(VersionAssembly)'" />
+
+    <Digillect.Build.Tasks.FileVersionInfo Files="$(VersionAssembly)">
+      <Output TaskParameter="FileVersionInfos" ItemName="Info" />
+    </Digillect.Build.Tasks.FileVersionInfo>
+
+    <PropertyGroup>
+      <PackageVersion>%(Info.VarFileVersion)</PackageVersion>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_FetchPackageVersionFromSpecFile" Condition="'$(VersionAssembly)' == ''">
+    <Message Text="Using version from spec file" />
+
+    <XmlPeek XmlInputPath="$(NuSpecFilePath)" Query="/package/metadata/version/text()">
+      <Output TaskParameter="Result" PropertyName="PackageVersion" />
+    </XmlPeek>
+  </Target>
+
+  <Target Name="TransformPackageVersion" />
+
+  <PropertyGroup>
+    <PackageDependsOn>
+      BeforePackage;
+      CorePackage;
+      AfterPackage
+    </PackageDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Package" DependsOnTargets="$(PackageDependsOn)" />
+
+  <Target Name="BeforePackage" />
+  <Target Name="AfterPackage" />
+
+  <Target Name="CorePackage">
+    <Exec Command='"$(NuGetExecutable)" pack "$(NuSpecFileName)" -Version "$(PackageVersion)" -NoPackageAnalysis $(NuGetVerbosityArgument) -NonInteractive' WorkingDirectory="$(OutputPath)" />
+  </Target>
+
+  <Target Name="Push" DependsOnTargets="Build" Condition="'$(NuGetPushSource)' != ''">
+    <Exec Command='"$(NuGetExecutable)" push "$(OutputPath)\$([System.IO.Path]::GetFileNameWithoutExtension("$(NuSpecFileName)")).$(PackageVersion).nupkg" -Source "$(NuGetPushSource)" "$(NuGetPushPassword)" $(NuGetVerbosityArgument) -NonInteractive' />
+  </Target>
+
+  <Target Name="_CheckPackageOutputPath">
+    <Error Condition="'$(OutputPath)' != '' And !HasTrailingSlash('$(OutputPath)')" Text="OutputPath must end with a backslash." />
+  </Target>
+</Project>

@@ -1,0 +1,3 @@
+[submodule "ext/mSpec2JUnit"]
+	path = ext/mSpec2JUnit
+	url = https://gist.github.com/1033374.git

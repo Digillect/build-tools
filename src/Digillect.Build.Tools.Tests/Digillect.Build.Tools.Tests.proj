@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project DefaultTargets="Test" InitialTargets="Clean;_Init" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <NuSpecFileName>Digillect.Build.Tools.nuspec</NuSpecFileName>
+    <NuSpecFilePath>$(MSBuildProjectDirectory)\..\Digillect.Build.Tools\$(NuSpecFileName)</NuSpecFilePath>
+    <OutputPath>$(MSBuildProjectDirectory)\..\..\target\tests\</OutputPath>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\..\Digillect.Build.Tools\build\Digillect.Build.Packaging.NuGet.props" />
+
+  <ItemGroup>
+    <_TestItem Include="$(OutputPath)_._" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Build Include="@(_TestItem)" />
+    <Content Include="@(_TestItem)" />
+    <Lib Include="@(_TestItem)" />
+    <LibNet11 Include="@(_TestItem)" />
+    <LibNet20 Include="@(_TestItem)" />
+    <LibNet20Compact Include="@(_TestItem)" />
+    <LibNet35 Include="@(_TestItem)" />
+    <LibNet40 Include="@(_TestItem)" />
+    <LibNet40Client Include="@(_TestItem)" />
+    <LibNet403 Include="@(_TestItem)" />
+    <LibNet45 Include="@(_TestItem)" />
+    <LibNet451 Include="@(_TestItem)" />
+    <LibNet452 Include="@(_TestItem)" />
+    <LibNet46 Include="@(_TestItem)" />
+    <LibWin8 Include="@(_TestItem)" />
+    <LibWin81 Include="@(_TestItem)" />
+    <LibSL3 Include="@(_TestItem)" />
+    <LibSL4 Include="@(_TestItem)" />
+    <LibSL5 Include="@(_TestItem)" />
+    <LibWP7 Include="@(_TestItem)" />
+    <LibWP71 Include="@(_TestItem)" />
+    <LibWP8 Include="@(_TestItem)" />
+    <LibWP81 Include="@(_TestItem)" />
+    <LibWPA81 Include="@(_TestItem)" />
+    <LibPortable Include="@(_TestItem)">
+      <Profile>all</Profile>
+    </LibPortable>
+    <LibMono Include="@(_TestItem)" />
+    <LibMonoAndroid Include="@(_TestItem)" />
+    <LibMonoTouch Include="@(_TestItem)" />
+    <LibMonoMac Include="@(_TestItem)" />
+    <Tools Include="@(_TestItem)" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\..\Digillect.Build.Tools\build\Digillect.Build.Packaging.NuGet.targets" />
+
+  <!-- Setup -->
+  <Target Name="BeforeTest">
+    <ItemGroup>
+      <_Sut Remove="@(_Sut)" />
+
+      <_Sut Include="$(NuSpecFilePath)">
+        <DestinationRelativeDir />
+      </_Sut>
+      <_Sut Include="@(Build)" />
+      <_Sut Include="@(Content)" />
+      <_Sut Include="@(Lib)" />
+      <_Sut Include="@(LibNet11)" />
+      <_Sut Include="@(LibNet20)" />
+      <_Sut Include="@(LibNet20Compact)" />
+      <_Sut Include="@(LibNet35)" />
+      <_Sut Include="@(LibNet40)" />
+      <_Sut Include="@(LibNet40Client)" />
+      <_Sut Include="@(LibNet403)" />
+      <_Sut Include="@(LibNet45)" />
+      <_Sut Include="@(LibNet451)" />
+      <_Sut Include="@(LibNet452)" />
+      <_Sut Include="@(LibNet46)" />
+      <_Sut Include="@(LibWin8)" />
+      <_Sut Include="@(LibWin81)" />
+      <_Sut Include="@(LibSL3)" />
+      <_Sut Include="@(LibSL4)" />
+      <_Sut Include="@(LibSL5)" />
+      <_Sut Include="@(LibWP7)" />
+      <_Sut Include="@(LibWP71)" />
+      <_Sut Include="@(LibWP8)" />
+      <_Sut Include="@(LibWP81)" />
+      <_Sut Include="@(LibWPA81)" />
+      <_Sut Include="@(LibPortable)">
+        <DestinationRelativeDir>%(DestinationRelativeDir)portable-%(LibPortable.Profile)\</DestinationRelativeDir>
+      </_Sut>
+      <_Sut Include="@(LibNative)" />
+      <_Sut Include="@(LibMono)" />
+      <_Sut Include="@(LibMonoAndroid)" />
+      <_Sut Include="@(LibMonoTouch)" />
+      <_Sut Include="@(LibMonoMac)" />
+      <_Sut Include="@(Tools)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Excercise -->
+  <PropertyGroup>
+    <CoreTestDependsOn>
+      Clean;
+      CopyPackageFilesToDestination
+    </CoreTestDependsOn>
+  </PropertyGroup>
+
+  <!-- Verify -->
+  <Target Name="AfterTest" Outputs="$(OutputPath)%(_Sut.DestinationRelativeDir)%(_Sut.RecursiveDir)%(_Sut.Filename)%(_Sut.Extension)">
+    <Error Condition="!Exists('$(OutputPath)%(_Sut.DestinationRelativeDir)%(_Sut.RecursiveDir)%(_Sut.Filename)%(_Sut.Extension)')" Text="Missing %(_Sut.DestinationRelativeDir)%(_Sut.RecursiveDir)%(_Sut.Filename)%(_Sut.Extension)" />
+  </Target>
+
+  <Target Name="_Init">
+    <MakeDir Directories="@(_TestItem->'%(RootDir)%(Directory)')" />
+    <Touch Files="@(_TestItem)" AlwaysCreate="true" ForceTouch="true" />
+  </Target>
+</Project>
