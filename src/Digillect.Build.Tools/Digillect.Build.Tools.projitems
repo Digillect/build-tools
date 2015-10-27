@@ -10,10 +10,11 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Packaging.NuGet.props" />
+    <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Testing.XUnit.targets" />
     <None Include="$(MSBuildThisFileDirectory)Digillect.Build.Tools.proj" />
     <None Include="$(MSBuildThisFileDirectory)Digillect.Build.Tools.nuspec" />
-    <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Tools.props" />
-    <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Tools.targets" />
+    <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Common.props" />
+    <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Common.targets" />
     <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Packaging.NuGet.targets" />
     <None Include="$(MSBuildThisFileDirectory)build\Digillect.Build.Testing.MSpec.targets" />
   </ItemGroup>

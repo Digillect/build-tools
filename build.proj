@@ -6,7 +6,7 @@
     <NuGetVerbosity Condition="'$(NuGetVerbosity)' == ''">quiet</NuGetVerbosity>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\build\Digillect.Build.Tools.props" />
+  <Import Project="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\build\Digillect.Build.Common.props" />
 
   <ItemGroup>
     <ProjectReference Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tasks\Digillect.Build.Tasks.csproj" />
@@ -19,7 +19,7 @@
     <TestProjects Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools.Tests\Digillect.Build.Tools.Tests.proj" />
   </ItemGroup>
 
-  <Import Project="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\build\Digillect.Build.Tools.targets" />
+  <Import Project="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\build\Digillect.Build.Common.targets" />
 
   <Target Name="AfterClean">
     <MSBuild Projects="@(TestProjects)" Properties="$(BuildProperties)" Targets="Clean" StopOnFirstFailure="false" />

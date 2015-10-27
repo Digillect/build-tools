@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TestWorkingDirectory Condition="'$(TestWorkingDirectory)' == ''">$(MSBuildProjectDirectory)\target\$(Configuration)\tests\</TestWorkingDirectory>
+    <TestWorkingDirectory Condition="'$(TestWorkingDirectory)' != '' And !HasTrailingSlash('$(TestWorkingDirectory)')">$(TestWorkingDirectory)\</TestWorkingDirectory>
+    <XUnitTestResultsFile Condition="'$(XUnitTestResultsFile)' == ''">$(TestWorkingDirectory)TestResults.xml</XUnitTestResultsFile>
+    <XUnitTestResultsNUnitFile Condition="'$(XUnitTestResultsNUnitFile)' == ''">$(TestWorkingDirectory)TestResultsNUnit.xml</XUnitTestResultsNUnitFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CoreTestDependsOn>
+      $(CoreTestDependsOn);
+      TestXUnitProjects
+    </CoreTestDependsOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <XUnitProjectReference Include="@(ProjectReference->WithMetadataValue('TestFramework', 'xUnit'))" />
+  </ItemGroup>
+
+  <Target Name="TestXUnitProjects" Outputs="$(XUnitTestResultsFile)">
+    <PropertyGroup>
+      <_XUnitRunnerNUnit Condition="'$(XUnitGenerateNUnitResults)' == 'true'">$(XUnitTestResultsNUnitFile)</_XUnitRunnerNUnit>
+      <_XUnitRunnerReporter Condition="'$(TestVerbose)' == 'true'">verbose</_XUnitRunnerReporter>
+    </PropertyGroup>
+
+    <MSBuild Projects="@(XUnitProjectReference)" Properties="$(BuildProperties)" Targets="Build">
+      <Output TaskParameter="TargetOutputs" ItemName="_XUnitAssemblies" />
+    </MSBuild>
+
+    <xunit
+      Assemblies="@(_XUnitAssemblies)"
+      NUnit="$(_XUnitRunnerNUnit)"
+      Reporter="$(_XUnitRunnerReporter)"
+      ShadowCopy="false"
+      Xml="$(XUnitTestResultsFile)"
+		/>
+  </Target>
+</Project>

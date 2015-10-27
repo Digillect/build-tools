@@ -3,7 +3,7 @@
 <package>
   <metadata>
     <id>Digillect.Build.Tools</id>
-    <version>2.0.0-alpha</version>
+    <version>2.0.0-beta</version>
     <authors>Gregory Nickonov</authors>
     <owners>Gregory Nickonov</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -14,6 +14,7 @@
       2.0.0 - Completely redesigned package structure and usage workflow
       - tools/ -> build/
       - Machine.Specifications testing moved to a separate .targets file to allow other test frameworks
+      - Added xUnit.net testing
       - Removed external dependency on MSBuild Community Tasks package
     </releaseNotes>
     <copyright>Copyright © 2012-2015 Gregory Nickonov (Actis® Wunderman). All rights reserved.</copyright>
