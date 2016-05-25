@@ -28,12 +28,12 @@
       <Output TaskParameter="TargetOutputs" ItemName="_XUnitAssemblies" />
     </MSBuild>
 
-    <xunit
+    <Xunit.Runner.MSBuild.xunit
       Assemblies="@(_XUnitAssemblies)"
       NUnit="$(_XUnitRunnerNUnit)"
       Reporter="$(_XUnitRunnerReporter)"
       ShadowCopy="false"
       Xml="$(XUnitTestResultsFile)"
-		/>
+    />
   </Target>
 </Project>

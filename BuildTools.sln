@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digillect.Build.Tasks", "src\Digillect.Build.Tasks\Digillect.Build.Tasks.csproj", "{1B6059AC-D9EA-4F1D-8B4E-8FA4E0AC0496}"
 EndProject
@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.cmd = build.cmd
 		build.proj = build.proj
 		src\Digillect.Build.Tools.Tests\Digillect.Build.Tools.Tests.proj = src\Digillect.Build.Tools.Tests\Digillect.Build.Tools.Tests.proj
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Digillect.Build.Tools", "src\Digillect.Build.Tools\Digillect.Build.Tools.shproj", "{C24B6DBF-93C6-463E-88E8-0F614D1A55C8}"

@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <NuGetVerbosity Condition="'$(NuGetVerbosity)' == ''">quiet</NuGetVerbosity>
-  </PropertyGroup>
-
   <Import Project="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\build\Digillect.Build.Common.props" />
 
   <ItemGroup>
     <ProjectReference Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tasks\Digillect.Build.Tasks.csproj" />
     <ProjectReference Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\Digillect.Build.Tools.proj">
-      <AdditionalProperties>NuGetVerbosity=$(NuGetVerbosity)</AdditionalProperties>
+      <AdditionalProperties>NuGetExecutable=$(NuGetExecutable);NuGetVerbosity=$(NuGetVerbosity)</AdditionalProperties>
     </ProjectReference>
   </ItemGroup>
 

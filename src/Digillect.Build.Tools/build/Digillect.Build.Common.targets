@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project InitialTargets="_CheckForInvalidConfiguration" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)Digillect.Build.Common.props" Condition="'$(DigillectBuildCommonPropsImported)' != 'True'" />
+
   <Target Name="_CheckForInvalidConfiguration">
     <PropertyGroup>
       <_InvalidConfigurationMessageText>The Configuration property is not set for project '$(MSBuildProjectFile)'.</_InvalidConfigurationMessageText>
+      <_InvalidSolutionDirMessageText>The SolutionDir property must end with a backslash.</_InvalidSolutionDirMessageText>
     </PropertyGroup>
 
     <Error Condition="'$(Configuration)' == ''" Text="$(_InvalidConfigurationMessageText)" />
+    <Error Condition="'$(SolutionDir)' != '' And !HasTrailingSlash('$(SolutionDir)')" Text="$(_InvalidSolutionDirMessageText)" />
 
-    <Message Text="Configuration=$(Configuration)" Importance="Low" />
+    <Message Text="Configuration=$(Configuration)" Importance="low" />
+    <Message Text="SolutionDir=$(SolutionDir)" Importance="low" />
   </Target>
 
   <PropertyGroup>
     <BuildDependsOn>
+      $(BuildDependsOn);
       RestorePackages;
       BeforeBuild;
-      GetBuildProperties;
       CoreBuild;
       AfterBuild
     </BuildDependsOn>
@@ -37,6 +42,7 @@
 
   <PropertyGroup>
     <RebuildDependsOn>
+      $(RebuildDependsOn);
       BeforeRebuild;
       Clean;
       Build;
@@ -51,8 +57,8 @@
 
   <PropertyGroup>
     <CleanDependsOn>
+      $(CleanDependsOn);
       BeforeClean;
-      GetBuildProperties;
       CoreClean;
       AfterClean
     </CleanDependsOn>
@@ -73,12 +79,11 @@
 
   <PropertyGroup>
     <TestDependsOn>
+      $(TestDependsOn);
       BeforeTest;
-      GetBuildProperties;
       CoreTest;
       AfterTest
     </TestDependsOn>
-    <CoreTestDependsOn />
   </PropertyGroup>
 
   <Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
@@ -98,13 +103,6 @@
       <_PackagesConfigFiles Include="@(_UnfilteredPackagesConfigPerProject->Distinct())" Condition="Exists('%(_UnfilteredPackagesConfigPerProject.FullPath)')" />
     </ItemGroup>
 
-    <Exec Command='"$(NuGetExecutable)" restore "%(_PackagesConfigFiles.FullPath)" -PackagesDirectory "$(MSBuildProjectDirectory)\packages" $(NuGetSourcesArgument) $(NuGetVerbosityArgument) -NonInteractive' Condition="'@(_PackagesConfigFiles)' != ''" />
-  </Target>
-
-  <Target Name="GetBuildProperties">
-    <PropertyGroup>
-      <BuildProperties Condition="'$(BuildProperties)' == ''">Configuration=$(Configuration);VisualStudioVersion=$(VisualStudioVersion)</BuildProperties>
-      <BuildProperties Condition="'$(BuildProperties)' != ''">Configuration=$(Configuration);VisualStudioVersion=$(VisualStudioVersion);$(BuildProperties)</BuildProperties>
-    </PropertyGroup>
+    <Exec Command='"$(NuGetExecutable)" restore "%(_PackagesConfigFiles.FullPath)" -PackagesDirectory "$(SolutionDir)packages" -NonInteractive $(_NuGetSourcesArgument) $(_NuGetVerbosityArgument)' Condition="'@(_PackagesConfigFiles)' != ''" />
   </Target>
 </Project>
