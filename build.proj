@@ -4,28 +4,18 @@
 
   <ItemGroup>
     <ProjectReference Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tasks\Digillect.Build.Tasks.csproj" />
-    <ProjectReference Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\Digillect.Build.Tools.proj">
-      <AdditionalProperties>NuGetExecutable=$(NuGetExecutable);NuGetVerbosity=$(NuGetVerbosity)</AdditionalProperties>
+    <ProjectReference Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\Digillect.Build.Tools.nuproj">
+      <AdditionalProperties>NuProjPath=$(SolutionDir)packages\NuProj.0.11.17-beta\tools\;NuGetToolExe=$(NuGetExecutable)</AdditionalProperties>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <TestProjects Include="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools.Tests\Digillect.Build.Tools.Tests.proj" />
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectDirectory)\src\Digillect.Build.Tools\build\Digillect.Build.Common.targets" />
 
   <Target Name="AfterClean">
-    <MSBuild Projects="@(TestProjects)" Properties="$(BuildProperties)" Targets="Clean" StopOnFirstFailure="false" />
-
     <ItemGroup>
       <_DirectoriesToClean Include="$(MSBuildProjectDirectory)\target\" />
     </ItemGroup>
 
     <RemoveDir Directories="@(_DirectoriesToClean)" ContinueOnError="true" />
-  </Target>
-
-  <Target Name="CoreTest">
-    <MSBuild Projects="@(TestProjects)" Properties="$(BuildProperties)" Targets="Test" StopOnFirstFailure="false" />
   </Target>
 </Project>

@@ -18,7 +18,7 @@ if exist .nuget\packages.config (
 	"%NuGetExe%" restore .nuget\packages.config -PackagesDirectory packages -NonInteractive -Verbosity quiet || exit /b !ERRORLEVEL!
 )
 
-"%MSBUILDDIR%MSBuild.exe" build.proj /nologo /v:m /p:NuGetExecutable="%NuGetExe%" /p:NuGetVerbosity=quiet %*
+"%MSBUILDDIR%MSBuild.exe" build.proj /nologo /v:m /p:SolutionDir="%~dp0\" /p:NuGetExecutable="%NuGetExe%" /p:NuGetVerbosity=quiet %*
 
 popd
 goto :EOF

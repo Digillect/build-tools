@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0"?>
 
 <package>
-  <metadata>
+  <metadata minClientVersion="3.0">
     <id>Digillect.Build.Tools</id>
-    <version>2.0.0-rc</version>
+    <version>2.0.0-rc2</version>
     <authors>Gregory Nickonov, Andrew Nefedkin</authors>
     <owners>Gregory Nickonov, Andrew Nefedkin</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/Digillect/build-tools</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <developmentDependency>true</developmentDependency>
     <description>MSBuild targets and scripts to support build/deploy projects.</description>
     <releaseNotes>
       2.0.0 - Completely redesigned package structure and usage workflow
@@ -16,6 +17,8 @@
       - Machine.Specifications testing moved to a separate .targets file to allow other test frameworks
       - Added xUnit.net testing
       - Removed external dependency on MSBuild Community Tasks package
+      - Narrowed down NuGet packaging items in preference of metadata
+      - Added project.json support
     </releaseNotes>
     <copyright>Copyright © 2012 Gregory Nickonov, Andrew Nefedkin (Actis® Wunderman)</copyright>
     <tags>digillect msbuild nuget</tags>

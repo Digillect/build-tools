@@ -97,12 +97,15 @@
       <_UnfilteredPackagesConfigPerProject Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)packages.config" />
       <!-- Starting with the NuGet 2.8 there can be additional per-project packages.config files -->
       <_UnfilteredPackagesConfigPerProject Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)packages.$([System.String]::Copy('%(ProjectReference.Filename)').Replace(' ', '_')).config" />
+      <!-- project.json support -->
+      <_UnfilteredPackagesConfigPerProject Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)project.json" />
+      <_UnfilteredPackagesConfigPerProject Include="%(ProjectReference.RootDir)%(ProjectReference.Directory)%(ProjectReference.Filename).project.json" />
     </ItemGroup>
 
     <ItemGroup>
       <_PackagesConfigFiles Include="@(_UnfilteredPackagesConfigPerProject->Distinct())" Condition="Exists('%(_UnfilteredPackagesConfigPerProject.FullPath)')" />
     </ItemGroup>
 
-    <Exec Command='"$(NuGetExecutable)" restore "%(_PackagesConfigFiles.FullPath)" -PackagesDirectory "$(SolutionDir)packages" -NonInteractive $(_NuGetSourcesArgument) $(_NuGetVerbosityArgument)' Condition="'@(_PackagesConfigFiles)' != ''" />
+    <Exec Command='"$(NuGetExecutable)" restore "%(_PackagesConfigFiles.FullPath)" -MSBuildVersion $(MSBuildToolsVersion) -SolutionDirectory "$(SolutionDir.TrimEnd(&apos;\&apos;))" -NonInteractive $(_NuGetSourcesArgument) $(_NuGetVerbosityArgument)' Condition="'@(_PackagesConfigFiles)' != ''" />
   </Target>
 </Project>
