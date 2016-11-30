@@ -5,7 +5,7 @@
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildProjectDirectory)\</SolutionDir>
-    <NuGetExecutable Condition="'$(NuGetExecutable)' == ''">nuget.exe</NuGetExecutable>
+    <NuGetExecutable Condition="'$(NuGetExecutable)' == ''">nuget</NuGetExecutable>
     <_NuGetSourcesArgument Condition="'$(NuGetSources)' != ''">-Source "$(NuGetSources)"</_NuGetSourcesArgument>
     <_NuGetVerbosityArgument Condition="'$(NuGetVerbosity)' != ''">-Verbosity $(NuGetVerbosity)</_NuGetVerbosityArgument>
   </PropertyGroup>
