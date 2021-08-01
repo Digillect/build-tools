@@ -7,8 +7,8 @@ using Microsoft.Build.Utilities;
 
 namespace Digillect.Build.Tasks
 {
-    public class FileVersionInfo : Task
-    {
+	public class FileVersionInfo : Task
+	{
 		[Required]
 		public ITaskItem[] Files
 		{

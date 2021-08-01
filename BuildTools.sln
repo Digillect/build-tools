@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digillect.Build.Tasks", "src\Digillect.Build.Tasks\Digillect.Build.Tasks.csproj", "{1B6059AC-D9EA-4F1D-8B4E-8FA4E0AC0496}"
 EndProject
@@ -9,10 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		build.cmd = build.cmd
 		build.proj = build.proj
+		NuGet.Config = NuGet.Config
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "Digillect.Build.Tools", "src\Digillect.Build.Tools\Digillect.Build.Tools.nuproj", "{C24B6DBF-93C6-463E-88E8-0F614D1A55C8}"
+Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "Digillect.Build.Tools", "src\Digillect.Build.Tools\Digillect.Build.Tools.nuproj", "{08211A35-813E-451D-B366-A9ADFA3F5D50}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AFE4FA62-77D5-44E3-AB02-3938FD6495E9}"
 	ProjectSection(SolutionItems) = preProject
@@ -29,10 +30,10 @@ Global
 		{1B6059AC-D9EA-4F1D-8B4E-8FA4E0AC0496}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B6059AC-D9EA-4F1D-8B4E-8FA4E0AC0496}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B6059AC-D9EA-4F1D-8B4E-8FA4E0AC0496}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C24B6DBF-93C6-463E-88E8-0F614D1A55C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C24B6DBF-93C6-463E-88E8-0F614D1A55C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C24B6DBF-93C6-463E-88E8-0F614D1A55C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C24B6DBF-93C6-463E-88E8-0F614D1A55C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08211A35-813E-451D-B366-A9ADFA3F5D50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08211A35-813E-451D-B366-A9ADFA3F5D50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08211A35-813E-451D-B366-A9ADFA3F5D50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08211A35-813E-451D-B366-A9ADFA3F5D50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

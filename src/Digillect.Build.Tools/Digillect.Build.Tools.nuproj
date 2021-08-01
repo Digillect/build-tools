@@ -1,50 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|AnyCPU">
-      <Configuration>Debug</Configuration>
-      <Platform>AnyCPU</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|AnyCPU">
-      <Configuration>Release</Configuration>
-      <Platform>AnyCPU</Platform>
-    </ProjectConfiguration>
-  </ItemGroup>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
+  <Import Project="..\..\packages\NuGet.Build.Packaging.0.1.291\build\Nuget.Build.Packaging.props" Condition="Exists('..\..\packages\NuGet.Build.Packaging.0.1.291\build\Nuget.Build.Packaging.props')" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>08211a35-813e-451d-b366-a9adfa3f5d50</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>Digillect.Build.Tools</PackageId>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
+    <Title>Digillect.Build.Tools</Title>
+    <Authors>Andrew Nefedkin</Authors>
+    <Owners>Andrew Nefedkin</Owners>
+    <Summary>Digillect.Build.Tools</Summary>
+    <Description>Digillect.Build.Tools</Description>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
+    <PackageProjectUrl>
+    </PackageProjectUrl>
+    <PackageLicenseUrl>
+    </PackageLicenseUrl>
+    <Copyright>Copyright © Andrew Nefedkin</Copyright>
+    <PackageTags>Digillect.Build.Tools</PackageTags>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;net47;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netcoreapp1.0;netcoreapp2.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
-    <Content Include="..\..\ext\mSpec2JUnit\mSpec2JUnit.xslt">
-      <Link>build\mSpec2JUnit.xslt</Link>
-    </Content>
     <Content Include="build\Digillect.Build.Common.props" />
-    <Content Include="build\Digillect.Build.Common.targets" />
-    <Content Include="build\Digillect.Build.Packaging.NuGet.props" />
-    <Content Include="build\Digillect.Build.Packaging.NuGet.targets" />
-    <Content Include="build\Digillect.Build.Testing.MSpec.targets" />
-    <Content Include="build\Digillect.Build.Testing.XUnit.targets" />
-    <None Include="Digillect.Build.Tools.nuspec" />
+    <None Include="build\Digillect.Build.Common.targets" />
+    <None Include="build\Digillect.Build.Packaging.NuGet.props" />
+    <None Include="build\Digillect.Build.Packaging.NuGet.targets" />
+    <None Include="build\Digillect.Build.Testing.MSpec.targets" />
+    <None Include="build\Digillect.Build.Testing.XUnit.targets" />
+    <None Include="packages.config" />
+    <None Include="Readme.txt">
+      <IncludeInPackage>true</IncludeInPackage>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Digillect.Build.Tasks\Digillect.Build.Tasks.csproj">
       <PackageDirectory>build</PackageDirectory>
     </ProjectReference>
   </ItemGroup>
-  <PropertyGroup Label="Globals">
-    <ProjectGuid>C24B6DBF-93C6-463E-88E8-0F614D1A55C8</ProjectGuid>
-  </PropertyGroup>
-  <PropertyGroup>
-    <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(MSBuildExtensionsPath)\NuProj\</NuProjPath>
-  </PropertyGroup>
-  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
-  <PropertyGroup Label="Configuration">
-    <PackageOutputGroups>BuiltProjectOutputGroup</PackageOutputGroups>
-    <NuSpecTemplate>Digillect.Build.Tools.nuspec</NuSpecTemplate>
-    <GenerateSymbolPackage>false</GenerateSymbolPackage>
-    <OutputPath>..\..\target\package\$(Configuration)\</OutputPath>
-    <Id>Digillect.Build.Tools</Id>
-    <Version>2.0.0-rc2</Version>
-    <Authors>Gregory Nickonov, Andrew Nefedkin</Authors>
-    <Title>Digillect.Build.Tools</Title>
-    <Owners>Gregory Nickonov, Andrew Nefedkin</Owners>
-    <Description>MSBuild targets and scripts to support build/deploy projects.</Description>
-  </PropertyGroup>
-  <Import Project="$(NuProjPath)\NuProj.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
+  <Import Project="..\..\packages\NuGet.Build.Packaging.0.1.291\build\Nuget.Build.Packaging.targets" Condition="Exists('..\..\packages\NuGet.Build.Packaging.0.1.291\build\Nuget.Build.Packaging.targets')" />
 </Project>

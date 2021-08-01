@@ -4,7 +4,7 @@
     "Microsoft.Build.Utilities.Core": "14.3.0",
     "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
     "NETStandard.Library": "1.6.1",
-    "NuProj.Common": "0.11.17-beta",
+    "NuGet.Build.Packaging": "0.1.291",
     "System.Diagnostics.FileVersionInfo": "4.3.0"
   },
   "frameworks": {
